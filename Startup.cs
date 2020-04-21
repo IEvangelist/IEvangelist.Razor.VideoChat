@@ -21,9 +21,9 @@ namespace IEvangelist.Razor.VideoChat
             services.AddRazorPages();
             services.Configure<TwilioSettings>(settings =>
             {
-                settings.AccountSid = GetEnvironmentVariable("TWILIO__ACCOUNT__SID");
-                settings.ApiSecret = GetEnvironmentVariable("TWILIO__API__SECRET");
-                settings.ApiKey = GetEnvironmentVariable("TWILIO__API__KEY");
+                settings.AccountSid = GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
+                settings.ApiSecret = GetEnvironmentVariable("TWILIO_API_SECRET");
+                settings.ApiKey = GetEnvironmentVariable("TWILIO_API_KEY");
             })
             .AddSingleton<ITwilioService, TwilioService>();
         }
