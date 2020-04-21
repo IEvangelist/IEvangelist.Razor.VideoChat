@@ -1,8 +1,6 @@
 using IEvangelist.Razor.VideoChat.Options;
-using IEvangelist.Razor.VideoChat.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static System.Environment;
@@ -11,11 +9,6 @@ namespace IEvangelist.Razor.VideoChat
 {
     public class Startup
     {
-        readonly IConfiguration _configuration;
-
-        public Startup(IConfiguration configuration) =>
-            _configuration = configuration;
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
@@ -24,8 +17,7 @@ namespace IEvangelist.Razor.VideoChat
                 settings.AccountSid = GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
                 settings.ApiSecret = GetEnvironmentVariable("TWILIO_API_SECRET");
                 settings.ApiKey = GetEnvironmentVariable("TWILIO_API_KEY");
-            })
-            .AddSingleton<ITwilioService, TwilioService>();
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

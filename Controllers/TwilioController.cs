@@ -1,5 +1,9 @@
-﻿using IEvangelist.Razor.VideoChat.Services;
+﻿using IEvangelist.Razor.VideoChat.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using Twilio.Jwt.AccessToken;
 
 namespace IEvangelist.Razor.VideoChat.Controllers
 {
@@ -9,13 +13,23 @@ namespace IEvangelist.Razor.VideoChat.Controllers
     ]
     public class TwilioController : ControllerBase
     {
-        readonly ITwilioService _videoService;
+        readonly TwilioSettings _twilioSettings;
 
-        public TwilioController(ITwilioService videoService) =>
-            _videoService = videoService;
+        public TwilioController(IOptions<TwilioSettings> twilioOptions) =>
+            _twilioSettings = twilioOptions?.Value ?? throw new ArgumentException(nameof(twilioOptions));
 
         [HttpGet("token")]
         public IActionResult GetToken() =>
-             new JsonResult(new { token = _videoService.GetTwilioJwt(User.Identity.Name) });
+             new JsonResult(
+                 new
+                 {
+                     token = new Token(
+                         _twilioSettings.AccountSid,
+                         _twilioSettings.ApiKey,
+                         _twilioSettings.ApiSecret,
+                         User.Identity.Name ?? Guid.NewGuid().ToString(),
+                         grants: new HashSet<IGrant> { new VideoGrant() })
+                     .ToJwt()
+                 });
     }
 }
